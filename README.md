@@ -1,62 +1,84 @@
-# Algorithm Bundle
+# 🔀 Merge Strategy
 
-Kotlin multi-module library with core criteria primitives, reactive adapters, and Spring Boot starters.
+This repository enforces a **linear history** policy (`Merge Commit` and `Squash & Merge` are **disabled**).
 
-## Modules
-`core`
-Core criteria primitives, builders, and a lightweight `ImperativeQueue`.
+# 🛠 Branch Workflows
 
-`reactive`
-Reactor-based adapters and async helpers for the core module.
+This repository follows a **simplified GitFlow-inspired** branching model.
 
-`spring-boot-starter`
-Spring Boot auto-configuration for imperative core components.
+## 🏗 Branch Structure
 
-`spring-boot-starter-reactive`
-Spring Boot auto-configuration for reactive adapters.
+`main` → Production-ready code. Only receives merges from `dev`. Triggers artifact publishing.
 
-## Requirements
-`Java 21` and `Gradle` (wrapper included).
+`dev` → Integration branch for new features and bug fixes.
 
-## Build
-```bash
-./gradlew build
+## 🔄 Workflow Summary
+
+### ✨ Feature Development
+
+Create a branch from `dev`.
+Used for new functionality.
+Merge back into `dev`.
+
+Direct merge into main is **not allowed**.
+
+### 🚀 Promotion to Production
+
+When `dev` is stable and validated:
+Create a Pull Request from `dev` → `main`.
+
+After approval and merge:
+Artifact publishing pipeline is triggered.
+
+### 📊 Visual
+
+```mermaid
+gitGraph
+    commit id: "main: init - base build & publishing setup"
+    branch dev
+    checkout dev
+    commit id: "build: setup multi-module structure"
+    commit id: "ci: add artifact publish pipeline (dev -> main)"
+    branch module/auth-core
+    checkout module/auth-core
+    commit id: "feat(auth-core): add domain models"
+    commit id: "feat(auth-core): expose service APIs"
+    commit id: "test(auth-core): add unit tests"
+    checkout dev
+    merge module/auth-core id: "integrate auth-core module (rebase)"
+    branch module/chat-api
+    checkout module/chat-api
+    commit id: "feat(chat-api): add chat usecases"
+    commit id: "feat(chat-api): define repository ports"
+    checkout dev
+    merge module/chat-api id: "integrate chat-api module (rebase)"
+    branch change/versioning-logic
+    checkout change/versioning-logic
+    commit id: "build: refine version calculation per module"
+    checkout dev
+    merge change/versioning-logic id: "integrate versioning changes (rebase)"
+    checkout main
+    merge dev id: "release: publish changed artifacts v0.2.0"
 ```
 
-## Usage
-### Core Criteria
-```kotlin
-import io.github.wliamp.agr.Criteria
-import io.github.wliamp.agr.AndBuilder
+---
 
-data class User(val name: String, val age: Int)
+# 🛡 Branch Protection Rules
 
-val criteria = AndBuilder<User>()
-    .startsWith(User::name, "A")
-    .greaterThan(User::age, 18)
-    .build()
+### 🔒 Protected
 
-val users = listOf(User("Alice", 22), User("Bob", 17))
-val filtered = users.filter { criteria.matches(it) }
-```
+- **Applied** `main`
+- **Restrict** `deletion` | `creation` | `updates`
 
-### Imperative Queue
-```kotlin
-import io.github.wliamp.agr.ImperativeQueue
+### ⚙️ Workflows
 
-val queue = ImperativeQueue<String>()
-queue.enqueue("a")
-queue.enqueue("b")
-val head = queue.dequeue()
-```
-
-### Reactive Adapters
-```kotlin
-import io.github.wliamp.agr.reactive.asReactive
-
-val reactiveQueue = queue.asReactive()
-reactiveQueue.enqueue("c").subscribe()
-```
-
-## Publishing
-Gradle publishing is configured for GitHub Packages and Sonatype. Provide the credentials via environment variables or Gradle properties.
+- **Applied** `main` |`dev`
+- **Restrict** `creations` | `deletions` | `force pushes`
+- **Required**
+    - `pull request`
+        - required approvals: 1
+        - dismiss stale approvals when new commits are pushed
+        - conversation resolution before merging
+        - allowed merge: *Rebase & Merge*
+    - `status checks`
+        - up to date before merging
