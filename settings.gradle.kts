@@ -1,6 +1,10 @@
+import java.lang.System.getenv
+
 rootProject.name = "algorithm"
 
-include(
+getenv("MODULE")?.takeIf { it.isNotBlank() }?.let {
+    include(it)
+} ?: include(
     "core",
     "reactive",
     "spring-boot-starter",
