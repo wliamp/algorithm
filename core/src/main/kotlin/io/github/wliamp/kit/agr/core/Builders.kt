@@ -1,7 +1,7 @@
-package io.github.wliamp.agr
+package io.github.wliamp.kit.agr.core
 
 class AndBuilder<T> {
-    private val criteria = mutableListOf<ICriteria<T>>()
+    private val criteria = mutableListOf<io.github.wliamp.kit.agr.core.ICriteria<T>>()
 
     fun <V> equals(selector: (T) -> V, expected: V): AndBuilder<T> =
         apply { criteria += Criteria.equals(selector, expected) }

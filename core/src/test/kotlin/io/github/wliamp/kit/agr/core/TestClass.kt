@@ -1,11 +1,12 @@
-package io.github.wliamp.agr
+package io.github.wliamp.kit.agr.core
 
+import io.github.wliamp.kit.agr.core.Criteria.alwaysTrue
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+
 class TestClass {
     @Test
     fun alwaysTrueMatches() {
-        val criteria = Criteria.alwaysTrue<String>()
-        assertTrue(criteria.matches("ok"))
+        assertTrue(alwaysTrue<String>().matches("ok"))
     }
 }

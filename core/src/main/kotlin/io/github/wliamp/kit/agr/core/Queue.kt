@@ -1,4 +1,4 @@
-package io.github.wliamp.agr
+package io.github.wliamp.kit.agr.core
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
