@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 
 @AutoConfiguration
-class AlgorithmReactiveAutoConfig {
+class ReactiveAlgorithmAutoConfig {
     @Bean
     @ConditionalOnMissingBean
     fun imperativeQueue(): Queue<Any> = Queue()
